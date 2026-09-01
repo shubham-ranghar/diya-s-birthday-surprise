@@ -1,44 +1,56 @@
-import { motion } from "motion/react";
-import { useMemo } from "react";
+import { useMemo, type CSSProperties } from "react";
 
-export function Particles({
-  count = 18,
-  tone = "gold",
-}: {
-  count?: number;
-  tone?: "gold" | "blush";
-}) {
-  const dots = useMemo(
+import { Emoji } from "./Emoji";
+
+const CELEBRATION_EMOJIS = ["🎂", "🎉", "✨", "🎈", "💖", "🎁", "🌟", "🥳"];
+
+/** Subtle floating Apple emojis — no dot bubbles. */
+export function Particles({ emojiCount = 6 }: { emojiCount?: number }) {
+  const emojis = useMemo(
     () =>
-      Array.from({ length: count }, (_, i) => ({
-        left: (i * 37) % 100,
-        size: 4 + ((i * 13) % 9),
-        duration: 9 + ((i * 7) % 9),
-        delay: (i * 0.9) % 8,
-        drift: ((i % 5) - 2) * 18,
+      Array.from({ length: emojiCount }, (_, i) => ({
+        left: 8 + ((i * 43) % 84),
+        top: 12 + ((i * 31) % 76),
+        emoji: CELEBRATION_EMOJIS[i % CELEBRATION_EMOJIS.length]!,
+        size: 16 + ((i * 3) % 5) * 4,
+        driftY: 28 + ((i * 11) % 42),
+        driftX: ((i % 7) - 3) * 14,
+        duration: 5 + ((i * 2) % 7),
+        delay: (i * 0.55) % 6,
+        opacity: 0.28 + ((i * 5) % 5) * 0.06,
       })),
-    [count],
+    [emojiCount],
   );
+
+  const floatStyle = (d: {
+    driftX: number;
+    driftY: number;
+    duration: number;
+    delay: number;
+    opacity: number;
+  }): CSSProperties =>
+    ({
+      "--drift-x": `${d.driftX}px`,
+      "--drift-y": `${d.driftY}px`,
+      "--float-duration": `${d.duration}s`,
+      "--float-delay": `${d.delay}s`,
+      "--emoji-opacity": String(d.opacity),
+    }) as CSSProperties;
 
   return (
     <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
-      {dots.map((d, i) => (
-        <motion.span
+      {emojis.map((e, i) => (
+        <span
           key={i}
-          className={`absolute rounded-full ${tone === "gold" ? "bg-gold/60" : "bg-blush/70"}`}
-          style={{ left: `${d.left}%`, width: d.size, height: d.size, bottom: -20 }}
-          animate={{
-            y: [0, -520],
-            x: [0, d.drift, 0],
-            opacity: [0, 0.85, 0],
+          className="ambient-emoji absolute leading-none"
+          style={{
+            left: `${e.left}%`,
+            top: `${e.top}%`,
+            ...floatStyle(e),
           }}
-          transition={{
-            duration: d.duration,
-            delay: d.delay,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        />
+        >
+          <Emoji size={e.size}>{e.emoji}</Emoji>
+        </span>
       ))}
     </div>
   );

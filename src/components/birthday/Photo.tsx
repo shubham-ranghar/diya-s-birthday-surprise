@@ -1,5 +1,4 @@
-import { motion, useScroll, useTransform, type Variants } from "motion/react";
-import { useRef } from "react";
+import { motion, type Variants } from "motion/react";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -38,7 +37,6 @@ export function Photo({
   delay = 0,
   className,
   caption,
-  drift = 0,
   priority = false,
 }: {
   index: number;
@@ -49,17 +47,10 @@ export function Photo({
   drift?: number;
   priority?: boolean;
 }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: ref,
-    offset: ["start end", "end start"],
-  });
-  const y = useTransform(scrollYProgress, [0, 1], [drift, -drift]);
   const src = `/images/diya-${String(index).padStart(2, "0")}.jpg`;
 
   return (
     <motion.div
-      ref={ref}
       className={`group relative overflow-hidden rounded-3xl bg-secondary shadow-soft ${className ?? ""}`}
       style={{ aspectRatio: "9 / 16" }}
       initial="hidden"
@@ -68,13 +59,12 @@ export function Photo({
       variants={variants[anim]}
       transition={{ duration: 1.3, delay, ease }}
     >
-      <motion.img
+      <img
         src={src}
         alt={caption ?? `A photo of Diya, number ${index}`}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
-        className="h-full w-full object-cover object-center transition-transform duration-[900ms] ease-out will-change-transform group-hover:scale-[1.04]"
-        style={{ y }}
+        className="h-full w-full object-cover object-center transition-transform duration-[900ms] ease-out group-hover:scale-[1.04]"
       />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/25 via-transparent to-transparent" />
       {caption && (

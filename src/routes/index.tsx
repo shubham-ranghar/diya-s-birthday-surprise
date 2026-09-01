@@ -1,7 +1,9 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
+import { Emoji, renderAppleEmojiText } from "@/components/birthday/Emoji";
+import { Hero } from "@/components/birthday/Hero";
 import { Photo } from "@/components/birthday/Photo";
 import { Particles } from "@/components/birthday/Particles";
 import { PinnedPhoto } from "@/components/birthday/PinnedPhoto";
@@ -32,7 +34,9 @@ export const Route = createFileRoute("/")({
 
 function BirthdayPage() {
   const [loading, setLoading] = useState(true);
-  useSmoothScroll(!loading);
+  const [scrollReady, setScrollReady] = useState(false);
+  const onHeroEntranceComplete = useCallback(() => setScrollReady(true), []);
+  useSmoothScroll(scrollReady);
 
   useEffect(() => {
     const t = setTimeout(() => setLoading(false), 2300);
@@ -43,13 +47,13 @@ function BirthdayPage() {
     <main className="relative w-full overflow-x-hidden bg-background text-foreground">
       <Preloader show={loading} />
 
-      <Hero />
+      <Hero ready={!loading} onEntranceComplete={onHeroEntranceComplete} />
       <OpeningMessage />
 
       <PhotoChapter
         eyebrow="Chapter One"
-        title="Moments"
-        blurb="Little ordinary days that somehow turned into favourites."
+        title="Moments 📸"
+        blurb="Little ordinary days that somehow turned into favourites. 💕"
         images={[1, 2, 3]}
       />
       <PinnedPhoto
@@ -60,8 +64,8 @@ function BirthdayPage() {
 
       <PhotoChapter
         eyebrow="Chapter Two"
-        title="Memories"
-        blurb="Places, laughter, and the timing that made all of it feel easy."
+        title="Memories 🌅"
+        blurb="Places, laughter, and the timing that made all of it feel easy. ✨"
         images={[5, 6, 7, 8]}
         flip
       />
@@ -69,14 +73,14 @@ function BirthdayPage() {
 
       <PhotoChapter
         eyebrow="Chapter Three"
-        title="Smiles"
-        blurb="The kind that shows up in the photo before it shows up in the room."
+        title="Smiles 😊"
+        blurb="The kind that shows up in the photo before it shows up in the room. 🌸"
         images={[10, 11, 12]}
       />
       <PhotoChapter
         eyebrow="Chapter Four"
-        title="You, this year"
-        blurb="Growing, glowing, and still the most genuine person in the room."
+        title="You, this year 🌟"
+        blurb="Growing, glowing, and still the most genuine person in the room. 💖"
         images={[13, 14, 15]}
         flip
       />
@@ -89,88 +93,19 @@ function BirthdayPage() {
   );
 }
 
-/* 1. Hero ------------------------------------------------------------------ */
-function Hero() {
-  return (
-    <section className="relative grid min-h-svh place-items-center overflow-hidden bg-sunrise grain px-6">
-      <motion.div
-        className="absolute inset-0 bg-glow"
-        animate={{ opacity: [0.45, 0.85, 0.45], scale: [1, 1.12, 1] }}
-        transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-      />
-      <Particles count={16} />
-
-      <div className="relative z-10 max-w-3xl text-center">
-        <motion.p
-          className="text-[0.7rem] uppercase tracking-[0.42em] text-ink/60 sm:text-xs"
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 1.2, delay: 2.5, ease: [0.22, 1, 0.36, 1] }}
-        >
-          A surprise from Shubham
-        </motion.p>
-
-        <h1 className="mt-6 font-display text-[3.1rem] leading-[1.02] tracking-tight text-ink sm:text-7xl md:text-8xl">
-          {["Happy", "Birthday,"].map((w, i) => (
-            <span key={w} className="block overflow-hidden">
-              <motion.span
-                className="block"
-                initial={{ y: "110%" }}
-                animate={{ y: "0%" }}
-                transition={{ duration: 1.3, delay: 2.6 + i * 0.14, ease: [0.22, 1, 0.36, 1] }}
-              >
-                {w}
-              </motion.span>
-            </span>
-          ))}
-          <span className="block overflow-hidden pb-2">
-            <motion.span
-              className="block italic text-sunset"
-              initial={{ y: "110%" }}
-              animate={{ y: "0%" }}
-              transition={{ duration: 1.4, delay: 2.9, ease: [0.22, 1, 0.36, 1] }}
-            >
-              Diya
-            </motion.span>
-          </span>
-        </h1>
-
-        <motion.div
-          className="mx-auto mt-10 h-px w-24 origin-center bg-ink/25"
-          initial={{ scaleX: 0 }}
-          animate={{ scaleX: 1 }}
-          transition={{ duration: 1.4, delay: 3.4, ease: "easeInOut" }}
-        />
-      </div>
-
-      <motion.div
-        className="absolute bottom-10 left-1/2 z-10 -translate-x-1/2 text-center"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 1, delay: 3.8 }}
-      >
-        <p className="text-[0.65rem] uppercase tracking-[0.34em] text-ink/55">Scroll gently</p>
-        <motion.div
-          className="mx-auto mt-3 h-10 w-px bg-ink/30"
-          animate={{ scaleY: [0.35, 1, 0.35], originY: 0 }}
-          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-        />
-      </motion.div>
-    </section>
-  );
-}
-
 /* 2. Opening message ------------------------------------------------------- */
 function OpeningMessage() {
   return (
-    <section className="relative mx-auto max-w-3xl px-6 py-28 text-center sm:py-40">
+    <section className="relative overflow-hidden px-6 py-28 sm:py-40">
+      <Particles emojiCount={5} />
+      <div className="relative mx-auto max-w-3xl text-center">
       <Reveal>
         <p className="text-[0.65rem] uppercase tracking-[0.38em] text-muted-foreground">
-          Before you scroll
+          Before you scroll <Emoji>✨</Emoji>
         </p>
       </Reveal>
       <h2 className="mt-8 font-display text-3xl leading-snug tracking-tight sm:text-5xl">
-        <WordReveal text="Some people make life lighter just by being in it — and you have been one of them." />
+        <WordReveal text="Some people make life lighter just by being in it — and you have been one of them. 💫" />
       </h2>
       <LineReveal
         className="mt-10 space-y-3 text-base font-light leading-relaxed text-muted-foreground sm:text-lg"
@@ -180,10 +115,10 @@ function OpeningMessage() {
           "Take your time. It was made for exactly one person.",
         ]}
       />
+      </div>
     </section>
   );
 }
-
 /* 3. Photo chapters -------------------------------------------------------- */
 const animCycle = ["fade-scale", "left", "blur", "right", "tilt", "parallax"] as const;
 
@@ -201,8 +136,9 @@ function PhotoChapter({
   flip?: boolean;
 }) {
   return (
-    <section className="relative px-5 py-20 sm:px-8 sm:py-28">
-      <div className="mx-auto max-w-6xl">
+    <section className="relative overflow-hidden px-5 py-20 sm:px-8 sm:py-28">
+      <Particles emojiCount={4} />
+      <div className="relative mx-auto max-w-6xl">
         <div className={`max-w-xl ${flip ? "sm:ml-auto sm:text-right" : ""}`}>
           <Reveal>
             <p className="text-[0.65rem] uppercase tracking-[0.38em] text-sunset">{eyebrow}</p>
@@ -211,7 +147,9 @@ function PhotoChapter({
             <WordReveal text={title} />
           </h2>
           <Reveal delay={0.12}>
-            <p className="mt-4 text-base font-light leading-relaxed text-muted-foreground">{blurb}</p>
+            <p className="mt-4 text-base font-light leading-relaxed text-muted-foreground">
+              {renderAppleEmojiText(blurb)}
+            </p>
           </Reveal>
         </div>
 
@@ -240,15 +178,15 @@ function PhotoChapter({
 function MessageFromShubham() {
   return (
     <section className="relative overflow-hidden bg-sunrise grain px-6 py-28 sm:py-40">
-      <Particles count={12} tone="blush" />
+      <Particles emojiCount={5} />
       <div className="relative mx-auto max-w-2xl rounded-[2.5rem] bg-card/80 p-8 shadow-soft backdrop-blur-sm sm:p-14">
         <Reveal>
           <p className="text-[0.65rem] uppercase tracking-[0.38em] text-muted-foreground">
-            A message for you
+            A message for you <Emoji>💌</Emoji>
           </p>
         </Reveal>
         <h2 className="mt-6 font-display text-3xl leading-snug tracking-tight sm:text-4xl">
-          <WordReveal text="Diya," stagger={0.08} />
+          <WordReveal text="Diya, 💖" stagger={0.08} />
         </h2>
         <LineReveal
           className="mt-6 space-y-4 text-base font-light leading-relaxed text-foreground/85 sm:text-lg"
@@ -256,7 +194,7 @@ function MessageFromShubham() {
             "Another year of you — and honestly, the world is nicer for it.",
             "Thank you for the conversations that ran too long, for the patience you never made a big deal about, and for being someone I can be completely myself around.",
             "I hope this year is kind to you: fewer things to worry about, more reasons to laugh, and a whole lot of moments worth photographing.",
-            "You deserve every good thing coming your way. Every single one.",
+            "You deserve every good thing coming your way. Every single one. 🥳",
           ]}
         />
         <Reveal delay={0.3} className="mt-10">
@@ -276,10 +214,11 @@ function MessageFromShubham() {
 function DateReveal() {
   return (
     <section className="relative grid min-h-[80svh] place-items-center overflow-hidden px-6 py-28">
-      <div className="text-center">
+      <Particles emojiCount={5} />
+      <div className="relative text-center">
         <Reveal>
           <p className="text-[0.65rem] uppercase tracking-[0.4em] text-muted-foreground">
-            The day itself
+            The day itself <Emoji>🎈</Emoji>
           </p>
         </Reveal>
 
@@ -312,20 +251,20 @@ function DateReveal() {
         />
         <Reveal delay={0.4}>
           <p className="mt-8 text-sm font-light tracking-wide text-muted-foreground">
-            Circled, remembered, and celebrated.
+            {renderAppleEmojiText("Circled, remembered, and celebrated. 🎂")}
           </p>
         </Reveal>
       </div>
 
-      <div className="mx-auto mt-16 grid w-full max-w-4xl grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6">
-        {[16, 17, 18].map((n, i) => (
+      <div className="mx-auto mt-16 grid w-full max-w-4xl grid-cols-2 gap-4 sm:grid-cols-4 sm:gap-6">
+        {[16, 17, 18, 20].map((n, i) => (
           <Photo
             key={n}
             index={n}
-            anim={(["blur", "tilt", "left"] as const)[i]!}
+            anim={(["blur", "tilt", "left", "right"] as const)[i]!}
             delay={i * 0.14}
             drift={18}
-            className={i === 1 ? "sm:mt-10" : ""}
+            className={i % 2 === 1 ? "sm:mt-10" : ""}
           />
         ))}
       </div>
@@ -337,15 +276,15 @@ function DateReveal() {
 function GiftSection() {
   return (
     <section className="relative overflow-hidden bg-ink px-6 py-32 text-cream sm:py-44">
-      <Particles count={20} />
+      <Particles emojiCount={5} />
       <div className="relative mx-auto max-w-3xl text-center">
         <Reveal>
-          <p className="text-[0.65rem] uppercase tracking-[0.42em] text-gold">Your gift</p>
+          <p className="text-[0.65rem] uppercase tracking-[0.42em] text-gold">Your gift <Emoji>🎁</Emoji></p>
         </Reveal>
         <h2 className="mt-8 font-display text-[2.6rem] leading-[1.08] tracking-tight sm:text-7xl">
           <WordReveal text="I built this entire website" />
           <span className="mt-2 block italic text-gold">
-            <WordReveal text="just for you." delay={0.3} />
+            <WordReveal text="just for you. 💝" delay={0.3} />
           </span>
         </h2>
         <LineReveal
@@ -377,11 +316,11 @@ function GiftSection() {
 function Closing() {
   return (
     <section className="relative overflow-hidden bg-sunrise grain px-5 pt-24 pb-20 sm:px-8 sm:pt-32">
-      <Particles count={22} />
+      <Particles emojiCount={6} />
       <div className="relative mx-auto max-w-5xl">
         <div className="mx-auto max-w-xl text-center">
           <h2 className="font-display text-3xl leading-snug tracking-tight sm:text-5xl">
-            <WordReveal text="Here's to a year that treats you as well as you treat everyone else." />
+            <WordReveal text="Here's to a year that treats you as well as you treat everyone else. 🥂" />
           </h2>
         </div>
 
@@ -401,12 +340,12 @@ function Closing() {
         <div className="mt-24 text-center sm:mt-32">
           <Reveal>
             <p className="font-display text-4xl tracking-tight text-ink sm:text-6xl">
-              Happy Birthday, <span className="italic text-sunset">Diya</span> 🎉
+              Happy Birthday, <span className="italic text-sunset">Diya</span> <Emoji>🎉</Emoji>
             </p>
           </Reveal>
           <Reveal delay={0.2}>
             <p className="mt-6 text-sm font-light tracking-[0.18em] uppercase text-ink/55">
-              10 · 09 — from Shubham
+              10 · 09 — from Shubham <Emoji>💌</Emoji>
             </p>
           </Reveal>
         </div>

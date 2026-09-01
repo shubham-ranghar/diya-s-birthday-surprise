@@ -1,6 +1,8 @@
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
 
+import { renderAppleEmojiText } from "./Emoji";
+
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export function Reveal({
@@ -57,7 +59,7 @@ export function WordReveal({
             }}
             transition={{ duration: 0.95, ease }}
           >
-            {w}
+            {renderAppleEmojiText(w)}
             {"\u00A0"}
           </motion.span>
         </span>
@@ -77,7 +79,7 @@ export function LineReveal({
     <div className={className}>
       {lines.map((line, i) => (
         <Reveal key={i} delay={i * 0.14} y={22}>
-          <p>{line}</p>
+          <p>{renderAppleEmojiText(line)}</p>
         </Reveal>
       ))}
     </div>

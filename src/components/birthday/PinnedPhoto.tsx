@@ -1,4 +1,6 @@
 import { useEffect, useRef } from "react";
+import { lenisInstance } from "./useSmoothScroll";
+import { Particles } from "./Particles";
 
 /**
  * A pinned, scroll-scrubbed single-image reveal (GSAP ScrollTrigger).
@@ -34,16 +36,24 @@ export function PinnedPhoto({
           scrollTrigger: {
             trigger: section.current,
             start: "top top",
-            end: "+=110%",
+            end: "+=120%",
             pin: true,
             scrub: 1,
+            onEnter: () => {
+              if (lenisInstance) lenisInstance.duration = 1.5;
+            },
+            onLeave: () => {
+              if (lenisInstance) lenisInstance.duration = 1.15;
+            },
+            onEnterBack: () => {
+              if (lenisInstance) lenisInstance.duration = 1.5;
+            },
+            onLeaveBack: () => {
+              if (lenisInstance) lenisInstance.duration = 1.15;
+            },
           },
         });
-        tl.fromTo(
-          image.current,
-          { scale: 1.22, filter: "blur(10px)" },
-          { scale: 1, filter: "blur(0px)", ease: "none" },
-        ).fromTo(
+        tl.fromTo(image.current, { scale: 1.15 }, { scale: 1, ease: "none" }).fromTo(
           text.current,
           { yPercent: 40, opacity: 0 },
           { yPercent: 0, opacity: 1, ease: "power2.out" },
@@ -64,13 +74,14 @@ export function PinnedPhoto({
 
   return (
     <section ref={section} className="relative h-svh w-full overflow-hidden bg-ink/5">
+      <Particles emojiCount={4} />
       <img
         ref={image}
         src={src}
         alt={title}
         loading="lazy"
         decoding="async"
-        className="absolute inset-0 h-full w-full object-cover object-center will-change-transform"
+        className="absolute inset-0 h-full w-full object-cover object-[50%_30%] will-change-transform"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/10 to-transparent" />
       <div
