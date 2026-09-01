@@ -203,6 +203,13 @@
   html {
     -webkit-font-smoothing: antialiased;
   }
+  html.scroll-locked,
+  html.scroll-locked body {
+    overflow: hidden !important;
+    height: 100%;
+    touch-action: none;
+    overscroll-behavior: none;
+  }
   body {
     font-family: var(--font-sans);
     overflow-x: hidden;
@@ -302,7 +309,106 @@
   }
 }
 
-/* Pinned photo — blur-to-focus scroll reveal */
+/* Fanned horizontal gallery — Chapter 1 */
+.fanned-gallery__wrap {
+  width: 100%;
+}
+
+.fanned-gallery__track {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: clamp(1.5rem, 10vw, 6rem);
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  scrollbar-width: none;
+  padding-block: 1.25rem 0.5rem;
+  min-height: clamp(20rem, 58vh, 32rem);
+}
+
+.fanned-gallery__track::-webkit-scrollbar {
+  display: none;
+}
+
+.fanned-gallery__spacer {
+  flex: 0 0 clamp(1.25rem, 8vw, 5rem);
+  scroll-snap-align: none;
+}
+
+.fanned-gallery__card {
+  scroll-snap-align: center;
+  scroll-snap-stop: always;
+  flex: 0 0 auto;
+  width: clamp(10.5rem, 58vw, 13.5rem);
+  margin-inline-end: clamp(-2.75rem, -8vw, -1.5rem);
+}
+
+.fanned-gallery__card:last-of-type {
+  margin-inline-end: 0;
+}
+
+.fanned-gallery__card-inner {
+  --rotate: 0deg;
+  --scale: 1;
+  transform: rotate(var(--rotate)) scale(var(--scale));
+  transform-origin: center center;
+  border-radius: 1rem;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.45);
+  will-change: transform, opacity;
+  aspect-ratio: 9 / 16;
+  max-height: clamp(18rem, 52vh, 28rem);
+}
+
+.fanned-gallery__img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+}
+
+@media (min-width: 640px) {
+  .fanned-gallery__track {
+    min-height: clamp(22rem, 62vh, 34rem);
+    padding-block: 1.5rem 0.75rem;
+  }
+
+  .fanned-gallery__card {
+    width: clamp(11.5rem, 14vw, 14.5rem);
+    margin-inline-end: clamp(-3.5rem, -4vw, -2.25rem);
+  }
+
+  .fanned-gallery__card-inner {
+    border-radius: 1.125rem;
+    max-height: clamp(20rem, 58vh, 30rem);
+  }
+
+  .fanned-gallery__spacer {
+    flex-basis: clamp(2rem, 12vw, 8rem);
+  }
+}
+
+@media (min-width: 1024px) {
+  .fanned-gallery__card {
+    width: clamp(12rem, 12vw, 14rem);
+    margin-inline-end: -2.75rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .fanned-gallery__track {
+    scroll-behavior: auto;
+  }
+}
+
 .pinned-photo__img {
   filter: blur(var(--blur-amount, 12px));
 }

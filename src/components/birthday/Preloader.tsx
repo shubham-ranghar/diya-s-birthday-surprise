@@ -2,9 +2,9 @@ import { AnimatePresence, motion } from "motion/react";
 
 const word = "Loading a Surprise...";
 
-export function Preloader({ show }: { show: boolean }) {
+export function Preloader({ show, onExitComplete }: { show: boolean; onExitComplete?: () => void }) {
   return (
-    <AnimatePresence>
+    <AnimatePresence onExitComplete={onExitComplete}>
       {show && (
         <motion.div
           className="fixed inset-0 z-50 flex items-center justify-center bg-sunrise grain"

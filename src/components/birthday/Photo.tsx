@@ -1,5 +1,7 @@
 import { motion, type Variants } from "motion/react";
 
+import { scheduleScrollTriggerRefresh } from "@/components/birthday/useSmoothScroll";
+
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export type PhotoAnim = "fade-scale" | "left" | "right" | "parallax" | "blur" | "tilt";
@@ -66,6 +68,7 @@ export function Photo({
         alt={caption ?? `A photo of Diya, number ${index}`}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
+        onLoad={() => scheduleScrollTriggerRefresh()}
         className={
           enhancedHover
             ? "photo-hover-enhanced__img h-full w-full object-cover object-center"

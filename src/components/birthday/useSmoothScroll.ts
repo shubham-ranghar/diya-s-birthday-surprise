@@ -3,6 +3,50 @@ import { useEffect } from "react";
 // Global reference to lenis instance for other components to access
 export let lenisInstance: any = null;
 
+const SCROLLER = typeof document !== "undefined" ? document.documentElement : null;
+
+let refreshRaf = 0;
+let scrollSystemReady = false;
+let scrollSystemWaiters: (() => void)[] = [];
+
+function notifyScrollSystemReady() {
+  scrollSystemReady = true;
+  scrollSystemWaiters.forEach((resolve) => resolve());
+  scrollSystemWaiters = [];
+}
+
+/** Resolves once Lenis + scrollerProxy are wired (or immediately if reduced-motion). */
+export function waitForScrollSystem(): Promise<void> {
+  if (scrollSystemReady || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    return Promise.resolve();
+  }
+  if (lenisInstance) {
+    scrollSystemReady = true;
+    return Promise.resolve();
+  }
+  return new Promise((resolve) => {
+    scrollSystemWaiters.push(resolve);
+  });
+}
+
+/** ScrollTrigger scroller element — must match scrollerProxy target in PinnedPhoto. */
+export function getScrollScroller() {
+  return lenisInstance && SCROLLER ? SCROLLER : undefined;
+}
+
+/** Debounced ScrollTrigger refresh — skips while a pin is actively engaged. */
+export function scheduleScrollTriggerRefresh() {
+  if (refreshRaf) cancelAnimationFrame(refreshRaf);
+  refreshRaf = requestAnimationFrame(async () => {
+    const { ScrollTrigger } = await import("gsap/ScrollTrigger");
+    const pinActive = ScrollTrigger.getAll().some((st) => st.pin && st.progress > 0 && st.progress < 1);
+    if (!pinActive) {
+      ScrollTrigger.refresh(false);
+    }
+    refreshRaf = 0;
+  });
+}
+
 /** Lenis smooth scroll, wired to GSAP ScrollTrigger. Disabled for reduced-motion users. */
 export function useSmoothScroll(enabled = true) {
   useEffect(() => {
@@ -10,7 +54,10 @@ export function useSmoothScroll(enabled = true) {
 
     window.scrollTo(0, 0);
 
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      notifyScrollSystemReady();
+      return;
+    }
 
     let cleanup = () => {};
     let cancelled = false;
@@ -26,11 +73,15 @@ export function useSmoothScroll(enabled = true) {
 
       window.scrollTo(0, 0);
 
-      const lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+      const lenis = new Lenis({
+        duration: 1.15,
+        smoothWheel: true,
+        autoRaf: false,
+      });
       lenisInstance = lenis;
       lenis.scrollTo(0, { immediate: true });
 
-      ScrollTrigger.scrollerProxy(document.documentElement, {
+      ScrollTrigger.scrollerProxy(SCROLLER!, {
         scrollTop(value) {
           if (arguments.length) {
             lenis.scrollTo(value, { immediate: true });
@@ -45,26 +96,24 @@ export function useSmoothScroll(enabled = true) {
             height: window.innerHeight,
           };
         },
+        pinType: SCROLLER!.style.transform ? "transform" : "fixed",
       });
 
-      let scrollRaf = 0;
-      const onScroll = () => {
-        if (scrollRaf) return;
-        scrollRaf = requestAnimationFrame(() => {
-          ScrollTrigger.update();
-          scrollRaf = 0;
-        });
-      };
+      ScrollTrigger.defaults({ scroller: SCROLLER! });
+
+      lenis.on("scroll", ScrollTrigger.update);
 
       const onRefresh = () => lenis.resize();
       ScrollTrigger.addEventListener("refresh", onRefresh);
-      lenis.on("scroll", onScroll);
 
       const raf = (time: number) => lenis.raf(time * 1000);
       gsap.ticker.add(raf);
+      gsap.ticker.lagSmoothing(0);
+
+      notifyScrollSystemReady();
 
       requestAnimationFrame(() => {
-        ScrollTrigger.refresh();
+        ScrollTrigger.refresh(true);
       });
 
       cleanup = () => {
@@ -72,6 +121,9 @@ export function useSmoothScroll(enabled = true) {
         gsap.ticker.remove(raf);
         lenis.destroy();
         lenisInstance = null;
+        scrollSystemReady = false;
+        ScrollTrigger.defaults({ scroller: undefined });
+        ScrollTrigger.clearScrollMemory?.();
       };
     })();
 

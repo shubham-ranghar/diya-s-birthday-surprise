@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { Emoji, renderAppleEmojiText } from "@/components/birthday/Emoji";
 import { Hero } from "@/components/birthday/Hero";
+import { ChapterOneFannedGallery } from "@/components/birthday/FannedGallery";
 import { Photo } from "@/components/birthday/Photo";
 import { Particles } from "@/components/birthday/Particles";
 import { PinnedPhoto } from "@/components/birthday/PinnedPhoto";
@@ -34,9 +35,10 @@ export const Route = createFileRoute("/")({
 
 function BirthdayPage() {
   const [loading, setLoading] = useState(true);
+  const [scrollLocked, setScrollLocked] = useState(true);
   const [scrollReady, setScrollReady] = useState(false);
   const onHeroEntranceComplete = useCallback(() => setScrollReady(true), []);
-  useSmoothScroll(scrollReady);
+  useSmoothScroll(scrollReady && !scrollLocked);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -46,22 +48,53 @@ function BirthdayPage() {
   }, []);
 
   useEffect(() => {
+    if (!scrollLocked) return;
+
+    document.documentElement.classList.add("scroll-locked");
+    document.body.classList.add("scroll-locked");
+    lenisInstance?.stop();
+
+    const preventScroll = (e: Event) => e.preventDefault();
+
+    window.addEventListener("wheel", preventScroll, { passive: false });
+    window.addEventListener("touchmove", preventScroll, { passive: false });
+
+    return () => {
+      document.documentElement.classList.remove("scroll-locked");
+      document.body.classList.remove("scroll-locked");
+      window.removeEventListener("wheel", preventScroll);
+      window.removeEventListener("touchmove", preventScroll);
+    };
+  }, [scrollLocked]);
+
+  useEffect(() => {
+    if (scrollLocked) return;
+
+    window.scrollTo(0, 0);
+    lenisInstance?.start();
+    lenisInstance?.scrollTo(0, { immediate: true });
+  }, [scrollLocked]);
+
+  useEffect(() => {
     const t = setTimeout(() => setLoading(false), 2300);
     return () => clearTimeout(t);
   }, []);
 
+  const onPreloaderExit = useCallback(() => setScrollLocked(false), []);
+
   return (
     <main className="relative w-full overflow-x-hidden bg-background text-foreground">
-      <Preloader show={loading} />
+      <Preloader show={loading} onExitComplete={onPreloaderExit} />
 
       <Hero ready={!loading} onEntranceComplete={onHeroEntranceComplete} />
       <OpeningMessage />
 
-      <PhotoChapter
+      <ChapterOneFannedGallery
+        enabled={scrollReady}
         eyebrow="Chapter One"
         title="Moments 📸"
         blurb="Little ordinary days that somehow turned into favourites. 💕"
-        images={[1, 2, 3]}
+        images={[1, 2, 3, 4, 5, 6]}
       />
       <PinnedPhoto
         enabled={scrollReady}

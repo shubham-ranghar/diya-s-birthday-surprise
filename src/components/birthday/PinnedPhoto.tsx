@@ -1,7 +1,7 @@
 import { useEffect, useRef, type CSSProperties } from "react";
-import { lenisInstance } from "./useSmoothScroll";
+import { getScrollScroller, lenisInstance, scheduleScrollTriggerRefresh, waitForScrollSystem } from "./useSmoothScroll";
 import { Particles } from "./Particles";
-import { Emoji, renderAppleEmojiText } from "./Emoji";
+import { renderAppleEmojiText } from "./Emoji";
 
 /**
  * A pinned, scroll-scrubbed single-image reveal (GSAP ScrollTrigger).
@@ -29,6 +29,9 @@ export function PinnedPhoto({
     let cancelled = false;
 
     (async () => {
+      await waitForScrollSystem();
+      if (cancelled || !section.current || !image.current || !text.current) return;
+
       const [{ default: gsap }, { ScrollTrigger }] = await Promise.all([
         import("gsap"),
         import("gsap/ScrollTrigger"),
@@ -46,44 +49,58 @@ export function PinnedPhoto({
       });
       if (cancelled || !section.current) return;
 
+      const scroller = getScrollScroller();
+
       const ctx = gsap.context(() => {
         gsap.set(image.current, { scale: 1.15, "--blur-amount": "12px" });
         gsap.set(text.current, { yPercent: 40, opacity: 0 });
 
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: section.current,
-            start: "top top",
-            end: "+=120%",
-            pin: true,
-            scrub: 1,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-            onEnter: () => {
-              if (lenisInstance) lenisInstance.duration = 1.5;
-            },
-            onLeave: () => {
-              if (lenisInstance) lenisInstance.duration = 1.15;
-            },
-            onEnterBack: () => {
-              if (lenisInstance) lenisInstance.duration = 1.5;
-            },
-            onLeaveBack: () => {
-              if (lenisInstance) lenisInstance.duration = 1.15;
-            },
+        const scrollTriggerConfig: gsap.plugins.ScrollTriggerInstanceVars = {
+          trigger: section.current,
+          start: "top top",
+          end: "+=120%",
+          pin: true,
+          pinSpacing: true,
+          scrub: true,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+          onEnter: () => {
+            if (lenisInstance) lenisInstance.duration = 1.5;
           },
-        });
-        tl.fromTo(image.current, { scale: 1.15, "--blur-amount": "12px" }, { scale: 1, "--blur-amount": "0px", ease: "none" }).fromTo(
+          onLeave: () => {
+            if (lenisInstance) lenisInstance.duration = 1.15;
+          },
+          onEnterBack: () => {
+            if (lenisInstance) lenisInstance.duration = 1.5;
+          },
+          onLeaveBack: () => {
+            if (lenisInstance) lenisInstance.duration = 1.15;
+          },
+        };
+
+        if (scroller) {
+          scrollTriggerConfig.scroller = scroller;
+        }
+
+        const tl = gsap.timeline({ scrollTrigger: scrollTriggerConfig });
+
+        tl.fromTo(
+          image.current,
+          { scale: 1.15, "--blur-amount": "12px" },
+          { scale: 1, "--blur-amount": "0px", ease: "none" },
+        ).fromTo(
           text.current,
           { yPercent: 40, opacity: 0 },
           { yPercent: 0, opacity: 1, ease: "power2.out" },
           0.15,
         );
-
-        requestAnimationFrame(() => ScrollTrigger.refresh());
       }, section);
 
       cleanup = () => ctx.revert();
+
+      requestAnimationFrame(() => {
+        requestAnimationFrame(() => scheduleScrollTriggerRefresh());
+      });
     })();
 
     return () => {
