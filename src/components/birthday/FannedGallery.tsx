@@ -144,23 +144,23 @@ export function ChapterOneFannedGallery({
   return (
     <section
       ref={sectionRef}
-      className="relative flex min-h-svh w-full flex-col justify-center overflow-hidden bg-ink py-12 sm:py-16"
+      className="relative flex min-h-svh w-full flex-col justify-center overflow-hidden bg-ink py-16 sm:py-20"
     >
       <div className="relative mx-auto w-full max-w-6xl px-5 sm:px-8">
         <Reveal>
           <p className="text-[clamp(0.76rem,2.5vw,0.65rem)] uppercase tracking-[0.38em] text-gold">{eyebrow}</p>
         </Reveal>
-        <h2 className="mt-4 font-display text-[clamp(2.65rem,8vw,2.25rem)] tracking-tight text-cream sm:text-6xl">
+        <h2 className="mt-5 font-display text-[clamp(2.65rem,8vw,2.25rem)] tracking-tight text-cream sm:text-6xl">
           <WordReveal text={title} />
         </h2>
         <Reveal delay={0.12}>
-          <p className="mt-4 max-w-xl text-[clamp(1.125rem,4vw,1rem)] font-light leading-relaxed text-cream/70">
+          <p className="mt-5 max-w-xl text-[clamp(1.125rem,4vw,1rem)] font-light leading-relaxed text-cream/70">
             {renderAppleEmojiText(blurb)}
           </p>
         </Reveal>
       </div>
 
-      <div className="fanned-gallery__wrap mt-8 sm:mt-10">
+      <div className="fanned-gallery__wrap mt-12 sm:mt-16">
         <div
           ref={trackRef}
           className="fanned-gallery__track"
@@ -194,7 +194,7 @@ export function ChapterOneFannedGallery({
           ))}
           <div className="fanned-gallery__spacer" aria-hidden="true" />
         </div>
-        <p className="fanned-gallery__hint mt-4 text-center text-[0.7rem] uppercase tracking-[0.28em] text-cream/40">
+        <p className="fanned-gallery__hint mt-6 text-center text-[0.7rem] uppercase tracking-[0.28em] text-cream/40">
           Swipe to browse
         </p>
       </div>

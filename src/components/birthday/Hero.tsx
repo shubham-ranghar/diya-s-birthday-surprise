@@ -24,6 +24,7 @@ export function Hero({
   const diyaRef = useRef<HTMLSpanElement>(null);
   const dividerRef = useRef<HTMLDivElement>(null);
   const dateRef = useRef<HTMLDivElement>(null);
+  const scrollHintRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!ready) return;
@@ -76,7 +77,8 @@ export function Hero({
           1.05,
         )
         .fromTo(dividerRef.current, { scaleX: 0 }, { scaleX: 1, duration: 0.55 }, 1.95)
-        .fromTo(dateRef.current, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5 }, 2.7);
+        .fromTo(dateRef.current, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.5 }, 2.7)
+        .fromTo(scrollHintRef.current, { opacity: 0, y: 15 }, { opacity: 1, y: 0, duration: 0.6 }, 3.2);
     }, sectionRef);
 
     return () => ctx.revert();
@@ -152,7 +154,7 @@ export function Hero({
           ref={eyebrowRef}
           className="font-label text-[clamp(0.95rem,2.8vw,0.8125rem)] font-medium uppercase tracking-[0.25em] text-ink/65 opacity-0 sm:text-[0.9375rem] md:text-base"
         >
-          {renderAppleEmojiText("A surprise from Shubham 🫶")} <Emoji>💌</Emoji>
+          {renderAppleEmojiText("A surprise from Shubham 🫶")}
         </p>
 
         <h1 className="mt-4 font-display tracking-tight text-ink sm:mt-5">
@@ -188,13 +190,25 @@ export function Hero({
           </span>
         </h1>
 
-        <div ref={dividerRef} className="mx-auto mt-6 h-px w-28 origin-center scale-x-0 bg-ink/25 sm:mt-7" />
+        <div ref={dividerRef} className="mx-auto mt-8 h-px w-28 origin-center scale-x-0 bg-ink/25 sm:mt-10" />
 
         <div
           ref={dateRef}
-          className="font-label mt-3 text-[clamp(1rem,3.2vw,0.875rem)] font-medium uppercase tracking-[0.2em] text-ink/60 opacity-0 sm:text-[1rem] md:text-[1.0625rem]"
+          className="font-label mt-4 text-[clamp(1rem,3.2vw,0.875rem)] font-medium uppercase tracking-[0.2em] text-ink/60 opacity-0 sm:text-[1rem] md:text-[1.0625rem]"
         >
           10th September <Emoji>🎂</Emoji>
+        </div>
+
+        <div
+          ref={scrollHintRef}
+          className="mt-12 text-center opacity-0 sm:mt-16"
+        >
+          <p className="text-[clamp(0.875rem,2.5vw,0.75rem)] font-bold uppercase tracking-[0.25em] text-ink/60">
+            Scroll for more surprises <Emoji>✨</Emoji>
+          </p>
+          <div className="mt-2 flex justify-center">
+            <div className="h-6 w-px bg-ink/30 animate-bounce" />
+          </div>
         </div>
       </div>
     </section>

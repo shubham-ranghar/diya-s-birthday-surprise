@@ -107,13 +107,13 @@ function BirthdayPage() {
         enabled={scrollReady}
         index={4}
         title="Moments, exactly as they were 📷"
-        subtitle="No filter needed — this is simply you, being you. ✨"
+        subtitle="No filter needed — this is simply you, being you. 💕"
       />
 
       <PhotoChapter
         eyebrow="Chapter Two"
         title="Memories 🌅"
-        blurb="Places, laughter, and the timing that made all of it feel easy. ✨"
+        blurb="Places, laughter, and the timing that made all of it feel easy. 💕"
         images={[5, 6, 7, 8]}
         flip
       />

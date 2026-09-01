@@ -124,7 +124,7 @@ export function PinnedPhoto({
         style={{ "--blur-amount": "12px" } as CSSProperties}
         className="pinned-photo__img absolute inset-0 h-full w-full scale-[1.15] object-cover object-[50%_30%] will-change-transform"
       />
-      <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/10 to-transparent" />
+      <div className="absolute inset-0 bg-gradient-to-t from-[#fdf9ef]/30 via-[#fdf9ef]/5 to-transparent" />
       <div
         ref={text}
         className="absolute inset-x-0 bottom-[20%] px-6 text-center opacity-0"
