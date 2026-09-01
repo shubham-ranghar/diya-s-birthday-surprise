@@ -1,7 +1,7 @@
 import { useEffect, useRef, type CSSProperties } from "react";
 import { getScrollScroller, lenisInstance, scheduleScrollTriggerRefresh, waitForScrollSystem } from "./useSmoothScroll";
 import { Particles } from "./Particles";
-import { renderAppleEmojiText } from "./Emoji";
+import { Emoji, renderAppleEmojiText } from "./Emoji";
 
 /**
  * A pinned, scroll-scrubbed single-image reveal (GSAP ScrollTrigger).
@@ -53,7 +53,7 @@ export function PinnedPhoto({
 
       const ctx = gsap.context(() => {
         gsap.set(image.current, { scale: 1.15, "--blur-amount": "12px" });
-        gsap.set(text.current, { yPercent: 40, opacity: 0 });
+        gsap.set(text.current, { opacity: 0 });
 
         const scrollTriggerConfig: gsap.plugins.ScrollTriggerInstanceVars = {
           trigger: section.current,
@@ -90,8 +90,8 @@ export function PinnedPhoto({
           { scale: 1, "--blur-amount": "0px", ease: "none" },
         ).fromTo(
           text.current,
-          { yPercent: 40, opacity: 0 },
-          { yPercent: 0, opacity: 1, ease: "power2.out" },
+          { opacity: 0 },
+          { opacity: 1, ease: "power2.out" },
           0.15,
         );
       }, section);
@@ -126,12 +126,13 @@ export function PinnedPhoto({
       <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/10 to-transparent" />
       <div
         ref={text}
-        className="absolute inset-x-0 bottom-0 translate-y-[40%] px-6 pb-16 text-center opacity-0 sm:pb-24"
+        className="absolute inset-x-0 top-[30%] px-6 text-center opacity-0 sm:top-[35%]"
       >
-        <h3 className="font-display text-[clamp(2.65rem,8vw,2.25rem)] tracking-wide text-cream sm:text-6xl">{renderAppleEmojiText(title)}</h3>
+        <h3 className="font-display text-[clamp(2rem,6vw,2.25rem)] tracking-wide text-cream sm:text-6xl">{renderAppleEmojiText(title)}</h3>
         {subtitle && (
-          <p className="mx-auto mt-3 max-w-md text-[clamp(1rem,3.5vw,0.875rem)] font-light text-cream/85 sm:text-base">
-            {renderAppleEmojiText(subtitle)}
+          <p className="mx-auto mt-2 max-w-md text-[clamp(0.875rem,2.5vw,0.875rem)] font-light text-cream/85 sm:mt-3 sm:text-base">
+            {subtitle.includes("🖼️") ? subtitle.replace("🖼️", "") + " " : subtitle}
+            {subtitle.includes("🖼️") && <Emoji>🖼️</Emoji>}
           </p>
         )}
       </div>

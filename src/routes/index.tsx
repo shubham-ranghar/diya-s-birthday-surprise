@@ -41,9 +41,9 @@ function BirthdayPage() {
   useSmoothScroll(scrollReady && !scrollLocked);
 
   useEffect(() => {
-    window.scrollTo(0, 0);
-    if (lenisInstance) {
-      lenisInstance.scrollTo(0, { immediate: true });
+    // Only scroll to top on initial page load, not on re-renders
+    if (lenisInstance && lenisInstance.scroll === 0) {
+      window.scrollTo(0, 0);
     }
   }, []);
 

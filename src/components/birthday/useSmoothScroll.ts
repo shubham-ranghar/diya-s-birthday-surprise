@@ -52,8 +52,6 @@ export function useSmoothScroll(enabled = true) {
   useEffect(() => {
     if (!enabled) return;
 
-    window.scrollTo(0, 0);
-
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       notifyScrollSystemReady();
       return;
@@ -71,19 +69,16 @@ export function useSmoothScroll(enabled = true) {
       if (cancelled) return;
       gsap.registerPlugin(ScrollTrigger);
 
-      window.scrollTo(0, 0);
-
       const lenis = new Lenis({
         duration: 1.15,
         smoothWheel: true,
         autoRaf: false,
       });
       lenisInstance = lenis;
-      lenis.scrollTo(0, { immediate: true });
 
       ScrollTrigger.scrollerProxy(SCROLLER!, {
         scrollTop(value) {
-          if (arguments.length) {
+          if (arguments.length && value !== undefined) {
             lenis.scrollTo(value, { immediate: true });
           }
           return lenis.scroll;
@@ -122,6 +117,7 @@ export function useSmoothScroll(enabled = true) {
         lenis.destroy();
         lenisInstance = null;
         scrollSystemReady = false;
+        // @ts-ignore - clearing scroller defaults
         ScrollTrigger.defaults({ scroller: undefined });
         ScrollTrigger.clearScrollMemory?.();
       };
