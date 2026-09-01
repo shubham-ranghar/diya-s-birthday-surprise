@@ -1,10 +1,14 @@
-import { useEffect, useRef, type CSSProperties } from "react";
+import * as React from "react";
 
 import { renderAppleEmojiText } from "@/components/birthday/Emoji";
 import { Reveal, WordReveal } from "@/components/birthday/Reveal";
-
-const CARD_ROTATIONS = [-9, -4, 5, 8, -6, 7, -3, 6, -7, 4] as const;
-const CARD_OFFSETS = [-18, 14, -10, 20, -14, 8, -12, 16, -8, 12] as const;
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 function imageSrc(index: number) {
   return `/images/diya-${String(index).padStart(2, "0")}.jpg`;
@@ -23,175 +27,8 @@ export function ChapterOneFannedGallery({
   images: number[];
   enabled?: boolean;
 }) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const trackRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    const track = trackRef.current;
-    if (!track) return;
-
-    const onWheel = (e: WheelEvent) => {
-      const atStart = track.scrollLeft <= 1;
-      const atEnd = track.scrollLeft >= track.scrollWidth - track.clientWidth - 1;
-      
-      // Only intercept horizontal scroll events, let vertical scroll pass through
-      if (Math.abs(e.deltaX) < Math.abs(e.deltaY)) return;
-
-      const delta = e.deltaX;
-
-      if (delta === 0) return;
-
-      const scrollingForward = delta > 0;
-      const scrollingBack = delta < 0;
-
-      if ((scrollingForward && !atEnd) || (scrollingBack && !atStart)) {
-        e.preventDefault();
-        e.stopPropagation();
-        track.scrollLeft += delta;
-      }
-    };
-
-    track.addEventListener("wheel", onWheel, { passive: false });
-
-    // Touch handling for mobile swipe
-    let touchStartX = 0;
-    let touchStartY = 0;
-    let isDragging = false;
-
-    const onTouchStart = (e: TouchEvent) => {
-      touchStartX = e.touches[0].clientX;
-      touchStartY = e.touches[0].clientY;
-      isDragging = false;
-    };
-
-    const onTouchMove = (e: TouchEvent) => {
-      const touchX = e.touches[0].clientX;
-      const touchY = e.touches[0].clientY;
-      const deltaX = touchX - touchStartX;
-      const deltaY = touchY - touchStartY;
-
-      // Only intercept if very clearly horizontal swipe (3x horizontal dominance)
-      if (Math.abs(deltaX) > Math.abs(deltaY) * 3 && Math.abs(deltaX) > 20) {
-        isDragging = true;
-        e.preventDefault();
-        track.scrollLeft -= deltaX;
-        touchStartX = touchX;
-        touchStartY = touchY;
-      }
-      // Vertical swipes pass through naturally
-    };
-
-    const onTouchEnd = () => {
-      isDragging = false;
-    };
-
-    track.addEventListener("touchstart", onTouchStart, { passive: true });
-    track.addEventListener("touchmove", onTouchMove, { passive: false });
-    track.addEventListener("touchend", onTouchEnd, { passive: true });
-
-    return () => {
-      track.removeEventListener("wheel", onWheel);
-      track.removeEventListener("touchstart", onTouchStart);
-      track.removeEventListener("touchmove", onTouchMove);
-      track.removeEventListener("touchend", onTouchEnd);
-    };
-  }, []);
-
-  useEffect(() => {
-    if (!enabled) return;
-
-    let cleanup = () => {};
-    let cancelled = false;
-    let hoverCleanups: (() => void)[] = [];
-
-    (async () => {
-      const [{ default: gsap }, { ScrollTrigger }] = await Promise.all([
-        import("gsap"),
-        import("gsap/ScrollTrigger"),
-      ]);
-      if (cancelled || !sectionRef.current) return;
-      gsap.registerPlugin(ScrollTrigger);
-
-      const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-      const ctx = gsap.context(() => {
-        const cards = gsap.utils.toArray<HTMLElement>(".fanned-gallery__card-inner", sectionRef.current!);
-        hoverCleanups = [];
-
-        if (reducedMotion) {
-          cards.forEach((card, i) => {
-            const rotate = CARD_ROTATIONS[i % CARD_ROTATIONS.length]!;
-            gsap.set(card, { opacity: 1, y: 0, "--rotate": `${rotate}deg`, "--scale": 1 });
-          });
-          return;
-        }
-
-        gsap.set(cards, { opacity: 0, y: 30, "--rotate": "0deg", "--scale": 1 });
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current,
-            start: "top 72%",
-            once: true,
-          },
-        });
-
-        cards.forEach((card, i) => {
-          const rotate = CARD_ROTATIONS[i % CARD_ROTATIONS.length]!;
-          tl.to(
-            card,
-            {
-              opacity: 1,
-              y: 0,
-              "--rotate": `${rotate}deg`,
-              duration: 0.9,
-              ease: [0.22, 1, 0.36, 1],
-            },
-            i * 0.1,
-          );
-        });
-
-        if (window.matchMedia("(hover: hover)").matches) {
-          cards.forEach((card, i) => {
-            const rotate = CARD_ROTATIONS[i % CARD_ROTATIONS.length]!;
-            const parent = card.parentElement;
-            if (!parent) return;
-
-            const onEnter = () => {
-              gsap.to(card, { "--rotate": "0deg", "--scale": 1.05, duration: 0.3, ease: "power2.out" });
-            };
-            const onLeave = () => {
-              gsap.to(card, { "--rotate": `${rotate}deg`, "--scale": 1, duration: 0.3, ease: "power2.out" });
-            };
-
-            parent.addEventListener("mouseenter", onEnter);
-            parent.addEventListener("mouseleave", onLeave);
-            hoverCleanups.push(() => {
-              parent.removeEventListener("mouseenter", onEnter);
-              parent.removeEventListener("mouseleave", onLeave);
-            });
-          });
-        }
-
-      }, sectionRef);
-
-      cleanup = () => {
-        hoverCleanups.forEach((fn) => fn());
-        ctx.revert();
-      };
-    })();
-
-    return () => {
-      cancelled = true;
-      cleanup();
-    };
-  }, [enabled]);
-
   return (
-    <section
-      ref={sectionRef}
-      className="relative flex min-h-svh w-full flex-col justify-center overflow-hidden bg-ink py-16 sm:py-20"
-    >
+    <section className="relative flex min-h-svh w-full flex-col justify-center overflow-hidden bg-ink py-16 sm:py-20">
       <div className="relative mx-auto w-full max-w-6xl px-5 sm:px-8">
         <Reveal>
           <p className="text-[clamp(0.76rem,2.5vw,0.65rem)] uppercase tracking-[0.38em] text-gold">{eyebrow}</p>
@@ -206,43 +43,31 @@ export function ChapterOneFannedGallery({
         </Reveal>
       </div>
 
-      <div className="fanned-gallery__wrap mt-12 sm:mt-16">
-        <div
-          ref={trackRef}
-          className="fanned-gallery__track"
-          aria-label="Chapter one photo gallery"
-        >
-          <div className="fanned-gallery__spacer" aria-hidden="true" />
-          {images.map((index, i) => (
-            <article
-              key={index}
-              className="fanned-gallery__card shrink-0"
-              style={{
-                zIndex: images.length - i,
-                marginTop: `${CARD_OFFSETS[i % CARD_OFFSETS.length]}px`,
-              }}
-            >
-              <div
-                className="fanned-gallery__card-inner"
-                style={{ "--rotate": `${CARD_ROTATIONS[i % CARD_ROTATIONS.length]}deg` } as CSSProperties}
-              >
-                <img
-                  src={imageSrc(index)}
-                  alt={`A photo of Diya, number ${index}`}
-                  loading={i < 4 ? "eager" : "lazy"}
-                  fetchPriority={i < 4 ? "high" : "auto"}
-                  decoding="async"
-                  draggable={false}
-                  className="fanned-gallery__img"
-                />
-              </div>
-            </article>
-          ))}
-          <div className="fanned-gallery__spacer" aria-hidden="true" />
-        </div>
-        <div className="fanned-gallery__hint mt-6 flex items-center justify-center gap-2 text-center">
+      <div className="mt-12 sm:mt-16">
+        <Carousel className="w-full max-w-5xl mx-auto" opts={{ align: "center", loop: true }}>
+          <CarouselContent>
+            {images.map((index) => (
+              <CarouselItem key={index} className="basis-full sm:basis-1/2 lg:basis-1/3 xl:basis-1/4">
+                <div className="p-2 sm:p-3">
+                  <div className="overflow-hidden rounded-2xl bg-card/80 shadow-soft backdrop-blur-sm aspect-[9/16]">
+                    <img
+                      src={imageSrc(index)}
+                      alt={`A photo of Diya, number ${index}`}
+                      loading="lazy"
+                      decoding="async"
+                      className="h-full w-full object-cover object-center"
+                    />
+                  </div>
+                </div>
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious className="left-2 sm:-left-12" />
+          <CarouselNext className="right-2 sm:-right-12" />
+        </Carousel>
+        <div className="mt-6 flex items-center justify-center gap-2 text-center">
           <p className="text-sm uppercase tracking-[0.28em] text-cream/40">
-            Swipe left to browse
+            Swipe to browse
           </p>
           <svg className="h-5 w-5 text-cream/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
