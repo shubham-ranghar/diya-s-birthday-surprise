@@ -149,19 +149,19 @@ export function Hero({
 
       <Particles emojiCount={6} />
 
-      <div className="relative z-10 w-full max-w-4xl text-center">
+      <div className="relative z-10 w-full max-w-5xl text-center">
         <p
           ref={eyebrowRef}
-          className="font-label text-[clamp(0.95rem,2.8vw,0.8125rem)] font-medium uppercase tracking-[0.25em] text-ink/65 opacity-0 sm:text-[0.9375rem] md:text-base"
+          className="font-label text-[clamp(1rem,3vw,0.875rem)] font-medium uppercase tracking-[0.25em] text-ink/65 opacity-0 sm:text-[1rem] md:text-lg"
         >
           {renderAppleEmojiText("A surprise from Shubham 🫶")}
         </p>
 
-        <h1 className="mt-4 font-display tracking-tight text-ink sm:mt-5">
+        <h1 className="mt-6 font-display tracking-tight text-ink sm:mt-8">
           <span className="block overflow-hidden leading-[0.94]">
             <span
               ref={happyRef}
-              className="block text-[clamp(4rem,10vw,9rem)] opacity-0"
+              className="block text-[clamp(5rem,12vw,10rem)] opacity-0"
             >
               Happy
             </span>
@@ -169,7 +169,7 @@ export function Hero({
           <span className="-mt-1 block overflow-hidden leading-[0.9] sm:-mt-2">
             <span
               ref={birthdayRef}
-              className="block text-[clamp(4rem,10vw,9rem)] opacity-0"
+              className="block text-[clamp(5rem,12vw,10rem)] opacity-0"
             >
               Birthday,
             </span>
@@ -182,7 +182,7 @@ export function Hero({
             <span ref={diyaWrapRef} className="hero-breathe inline-block">
               <span
                 ref={diyaRef}
-                className="block text-[clamp(5rem,13vw,11rem)] leading-[0.88] italic text-sunset opacity-0"
+                className="block text-[clamp(6rem,15vw,12rem)] leading-[0.88] italic text-sunset opacity-0"
               >
                 Diya
               </span>
@@ -190,23 +190,23 @@ export function Hero({
           </span>
         </h1>
 
-        <div ref={dividerRef} className="mx-auto mt-8 h-px w-28 origin-center scale-x-0 bg-ink/25 sm:mt-10" />
+        <div ref={dividerRef} className="mx-auto mt-10 h-px w-32 origin-center scale-x-0 bg-ink/25 sm:mt-12" />
 
         <div
           ref={dateRef}
-          className="font-label mt-4 text-[clamp(1rem,3.2vw,0.875rem)] font-medium uppercase tracking-[0.2em] text-ink/60 opacity-0 sm:text-[1rem] md:text-[1.0625rem]"
+          className="font-label mt-5 text-[clamp(1.125rem,3.5vw,1rem)] font-medium uppercase tracking-[0.2em] text-ink/60 opacity-0 sm:text-[1.125rem] md:text-lg"
         >
           10th September <Emoji>🎂</Emoji>
         </div>
 
         <div
           ref={scrollHintRef}
-          className="mt-12 text-center opacity-0 sm:mt-16"
+          className="mt-16 text-center opacity-0 sm:mt-20"
         >
-          <p className="text-[clamp(0.875rem,2.5vw,0.75rem)] font-bold uppercase tracking-[0.25em] text-ink/60">
+          <p className="font-display text-2xl font-bold tracking-wide text-ink/70 sm:text-4xl">
             Scroll for more surprises <Emoji>✨</Emoji>
           </p>
-          <div className="mt-2 flex justify-center">
+          <div className="mt-3 flex justify-center">
             <div className="h-6 w-px bg-ink/30 animate-bounce" />
           </div>
         </div>

@@ -105,7 +105,7 @@ function BirthdayPage() {
       />
       <PinnedPhoto
         enabled={scrollReady}
-        index={4}
+        index={10}
         title="Moments, exactly as they were 📷"
         subtitle="No filter needed — this is simply you, being you. 💕"
       />
@@ -229,31 +229,39 @@ function MessageFromShubham() {
     <section className="relative overflow-hidden bg-sunrise grain px-6 py-28 sm:py-40">
       <Particles emojiCount={5} />
       <div className="relative mx-auto max-w-2xl rounded-[2.5rem] bg-card/80 p-8 shadow-soft backdrop-blur-sm sm:p-14">
-        <Reveal>
-          <p className="text-[clamp(0.76rem,2.5vw,0.65rem)] uppercase tracking-[0.38em] text-muted-foreground">
-            A message for you <Emoji>💌</Emoji>
-          </p>
-        </Reveal>
-        <h2 className="mt-6 font-display text-[clamp(2.2rem,7vw,1.875rem)] leading-snug tracking-tight sm:text-4xl">
-          <WordReveal text="Diya, 💖" stagger={0.08} />
-        </h2>
-        <LineReveal
-          className="mt-6 space-y-4 text-[clamp(1.125rem,4vw,1rem)] font-light leading-relaxed text-foreground/85 sm:text-lg"
-          lines={[
-            "Another year of you — and honestly, the world is nicer for it.",
-            "Thank you for the conversations that ran too long, for the patience you never made a big deal about, and for being someone I can be completely myself around.",
-            "I hope this year is kind to you: fewer things to worry about, more reasons to laugh, and a whole lot of moments worth photographing.",
-            "You deserve every good thing coming your way. Every single one. 🥳",
-          ]}
+        <img
+          src="/images/diya-15.jpg"
+          alt=""
+          className="absolute inset-0 h-full w-full rounded-[2.5rem] object-cover opacity-15"
+          loading="lazy"
         />
-        <Reveal delay={0.3} className="mt-10">
-          <div className="flex items-end justify-between gap-4 border-t border-border pt-6">
-            <span className="text-[clamp(0.76rem,2.5vw,0.65rem)] uppercase tracking-[0.32em] text-muted-foreground">
-              With warmth
-            </span>
-            <span className="font-script text-[clamp(2.65rem,8vw,2.25rem)] text-sunset sm:text-5xl">{renderAppleEmojiText("Shubham 🫶")}</span>
-          </div>
-        </Reveal>
+        <div className="relative z-10">
+          <Reveal>
+            <p className="text-[clamp(0.76rem,2.5vw,0.65rem)] uppercase tracking-[0.38em] text-muted-foreground">
+              A message for you <Emoji>💌</Emoji>
+            </p>
+          </Reveal>
+          <h2 className="mt-6 font-display text-[clamp(2.2rem,7vw,1.875rem)] leading-snug tracking-tight sm:text-4xl">
+            <WordReveal text="Diya, 💖" stagger={0.08} />
+          </h2>
+          <LineReveal
+            className="mt-6 space-y-4 text-[clamp(1.125rem,4vw,1rem)] font-light leading-relaxed text-foreground/85 sm:text-lg"
+            lines={[
+              "Another year of you — and honestly, the world is nicer for it.",
+              "Thank you for the conversations that ran too long, for the patience you never made a big deal about, and for being someone I can be completely myself around.",
+              "I hope this year is kind to you: fewer things to worry about, more reasons to laugh, and a whole lot of moments worth photographing.",
+              "You deserve every good thing coming your way. Every single one. 🥳",
+            ]}
+          />
+          <Reveal delay={0.3} className="mt-10">
+            <div className="flex items-end justify-between gap-4 border-t border-border pt-6">
+              <span className="text-[clamp(0.76rem,2.5vw,0.65rem)] uppercase tracking-[0.32em] text-muted-foreground">
+                With warmth
+              </span>
+              <span className="font-script text-[clamp(2.65rem,8vw,2.25rem)] text-sunset sm:text-5xl">{renderAppleEmojiText("Shubham 🫶")}</span>
+            </div>
+          </Reveal>
+        </div>
       </div>
     </section>
   );
