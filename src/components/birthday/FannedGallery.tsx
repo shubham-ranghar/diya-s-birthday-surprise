@@ -52,7 +52,40 @@ export function ChapterOneFannedGallery({
     };
 
     track.addEventListener("wheel", onWheel, { passive: false });
-    return () => track.removeEventListener("wheel", onWheel);
+
+    // Touch handling for mobile swipe
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    const onTouchStart = (e: TouchEvent) => {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    };
+
+    const onTouchMove = (e: TouchEvent) => {
+      const touchX = e.touches[0].clientX;
+      const touchY = e.touches[0].clientY;
+      const deltaX = touchX - touchStartX;
+      const deltaY = touchY - touchStartY;
+
+      // Only intercept if clearly horizontal swipe (dominant horizontal movement)
+      if (Math.abs(deltaX) > Math.abs(deltaY) * 2 && Math.abs(deltaX) > 15) {
+        e.preventDefault();
+        track.scrollLeft -= deltaX;
+        touchStartX = touchX;
+        touchStartY = touchY;
+      }
+      // Vertical swipes pass through naturally
+    };
+
+    track.addEventListener("touchstart", onTouchStart, { passive: true });
+    track.addEventListener("touchmove", onTouchMove, { passive: false });
+
+    return () => {
+      track.removeEventListener("wheel", onWheel);
+      track.removeEventListener("touchstart", onTouchStart);
+      track.removeEventListener("touchmove", onTouchMove);
+    };
   }, []);
 
   useEffect(() => {
