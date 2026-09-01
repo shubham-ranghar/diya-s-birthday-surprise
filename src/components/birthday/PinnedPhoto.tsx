@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import { lenisInstance } from "./useSmoothScroll";
 import { Particles } from "./Particles";
+import { Emoji, renderAppleEmojiText } from "./Emoji";
 
 /**
  * A pinned, scroll-scrubbed single-image reveal (GSAP ScrollTrigger).
@@ -88,10 +89,10 @@ export function PinnedPhoto({
         ref={text}
         className="absolute inset-x-0 bottom-0 px-6 pb-16 text-center sm:pb-24"
       >
-        <h3 className="font-display text-4xl tracking-wide text-cream sm:text-6xl">{title}</h3>
+        <h3 className="font-display text-4xl tracking-wide text-cream sm:text-6xl">{renderAppleEmojiText(title)}</h3>
         {subtitle && (
           <p className="mx-auto mt-3 max-w-md text-sm font-light text-cream/85 sm:text-base">
-            {subtitle}
+            {renderAppleEmojiText(subtitle)}
           </p>
         )}
       </div>

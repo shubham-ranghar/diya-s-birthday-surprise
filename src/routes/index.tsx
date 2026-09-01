@@ -58,8 +58,8 @@ function BirthdayPage() {
       />
       <PinnedPhoto
         index={4}
-        title="Moments, exactly as they were"
-        subtitle="No filter needed — this is simply you, being you."
+        title="Moments, exactly as they were 📷"
+        subtitle="No filter needed — this is simply you, being you. ✨"
       />
 
       <PhotoChapter
@@ -69,7 +69,7 @@ function BirthdayPage() {
         images={[5, 6, 7, 8]}
         flip
       />
-      <PinnedPhoto index={9} title="Memories worth keeping" subtitle="Saved, framed, and scrolled back to." />
+      <PinnedPhoto index={9} title="Memories worth keeping 💫" subtitle="Saved, framed, and scrolled back to. 🖼️" />
 
       <PhotoChapter
         eyebrow="Chapter Three"
