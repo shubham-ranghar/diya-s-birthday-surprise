@@ -1,11 +1,11 @@
-import { motion, useScroll, useTransform } from "motion/react";
+import { motion, useScroll, useTransform, type Variants } from "motion/react";
 import { useRef } from "react";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
 export type PhotoAnim = "fade-scale" | "left" | "right" | "parallax" | "blur" | "tilt";
 
-const variants: Record<PhotoAnim, { hidden: Record<string, unknown>; visible: Record<string, unknown> }> = {
+const variants: Record<PhotoAnim, Variants> = {
   "fade-scale": {
     hidden: { opacity: 0, scale: 1.08 },
     visible: { opacity: 1, scale: 1 },

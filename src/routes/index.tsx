@@ -224,7 +224,7 @@ function PhotoChapter({
             <Photo
               key={n}
               index={n}
-              anim={animCycle[(n + i) % animCycle.length]}
+              anim={animCycle[(n + i) % animCycle.length]!}
               delay={i * 0.12}
               drift={i % 2 === 0 ? 16 : 26}
               className={i === 1 && images.length === 3 ? "sm:mt-12" : i % 2 === 1 ? "sm:mt-8" : ""}
@@ -322,7 +322,7 @@ function DateReveal() {
           <Photo
             key={n}
             index={n}
-            anim={(["blur", "tilt", "left"] as const)[i]}
+            anim={(["blur", "tilt", "left"] as const)[i]!}
             delay={i * 0.14}
             drift={18}
             className={i === 1 ? "sm:mt-10" : ""}
@@ -390,7 +390,7 @@ function Closing() {
             <Photo
               key={`${n}-close`}
               index={n}
-              anim={(["tilt", "right", "fade-scale", "blur"] as const)[i]}
+              anim={(["tilt", "right", "fade-scale", "blur"] as const)[i]!}
               delay={i * 0.12}
               drift={i % 2 ? 24 : 14}
               className={i % 2 ? "sm:mt-10" : ""}
