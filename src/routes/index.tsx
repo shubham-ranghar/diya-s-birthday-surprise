@@ -40,6 +40,15 @@ function BirthdayPage() {
   const onHeroEntranceComplete = useCallback(() => setScrollReady(true), []);
   useSmoothScroll(scrollReady && !scrollLocked);
 
+  // Preload critical images
+  useEffect(() => {
+    const criticalImages = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+    criticalImages.forEach((index) => {
+      const img = new Image();
+      img.src = `/images/diya-${String(index).padStart(2, "0")}.jpg`;
+    });
+  }, []);
+
   useEffect(() => {
     // Only scroll to top on initial page load, not on re-renders
     if (lenisInstance && lenisInstance.scroll === 0) {

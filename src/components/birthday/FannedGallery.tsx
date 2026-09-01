@@ -183,7 +183,8 @@ export function ChapterOneFannedGallery({
                 <img
                   src={imageSrc(index)}
                   alt={`A photo of Diya, number ${index}`}
-                  loading={i < 2 ? "eager" : "lazy"}
+                  loading={i < 4 ? "eager" : "lazy"}
+                  fetchPriority={i < 4 ? "high" : "auto"}
                   decoding="async"
                   draggable={false}
                   className="fanned-gallery__img"

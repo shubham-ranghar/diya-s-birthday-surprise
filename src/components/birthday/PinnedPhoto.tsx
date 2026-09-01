@@ -119,6 +119,7 @@ export function PinnedPhoto({
         src={src}
         alt={title}
         loading="eager"
+        fetchPriority="high"
         decoding="async"
         style={{ "--blur-amount": "12px" } as CSSProperties}
         className="pinned-photo__img absolute inset-0 h-full w-full scale-[1.15] object-cover object-[50%_30%] will-change-transform"
@@ -126,7 +127,7 @@ export function PinnedPhoto({
       <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/10 to-transparent" />
       <div
         ref={text}
-        className="absolute inset-x-0 top-[30%] px-6 text-center opacity-0 sm:top-[35%]"
+        className="absolute inset-x-0 bottom-[20%] px-6 text-center opacity-0"
       >
         <h3 className="font-display text-[clamp(2rem,6vw,2.25rem)] tracking-wide text-cream sm:text-6xl">{renderAppleEmojiText(title)}</h3>
         {subtitle && (
