@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, type CSSProperties } from "react";
 import { lenisInstance } from "./useSmoothScroll";
 import { Particles } from "./Particles";
 import { Emoji, renderAppleEmojiText } from "./Emoji";
@@ -11,16 +11,20 @@ export function PinnedPhoto({
   index,
   title,
   subtitle,
+  enabled = true,
 }: {
   index: number;
   title: string;
   subtitle?: string;
+  enabled?: boolean;
 }) {
   const section = useRef<HTMLDivElement>(null);
   const image = useRef<HTMLImageElement>(null);
   const text = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (!enabled) return;
+
     let cleanup = () => {};
     let cancelled = false;
 
@@ -29,10 +33,23 @@ export function PinnedPhoto({
         import("gsap"),
         import("gsap/ScrollTrigger"),
       ]);
-      if (cancelled || !section.current) return;
+      if (cancelled || !section.current || !image.current || !text.current) return;
       gsap.registerPlugin(ScrollTrigger);
 
+      await new Promise<void>((resolve) => {
+        if (image.current!.complete) {
+          resolve();
+          return;
+        }
+        image.current!.addEventListener("load", () => resolve(), { once: true });
+        image.current!.addEventListener("error", () => resolve(), { once: true });
+      });
+      if (cancelled || !section.current) return;
+
       const ctx = gsap.context(() => {
+        gsap.set(image.current, { scale: 1.15, "--blur-amount": "12px" });
+        gsap.set(text.current, { yPercent: 40, opacity: 0 });
+
         const tl = gsap.timeline({
           scrollTrigger: {
             trigger: section.current,
@@ -40,6 +57,8 @@ export function PinnedPhoto({
             end: "+=120%",
             pin: true,
             scrub: 1,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
             onEnter: () => {
               if (lenisInstance) lenisInstance.duration = 1.5;
             },
@@ -54,12 +73,14 @@ export function PinnedPhoto({
             },
           },
         });
-        tl.fromTo(image.current, { scale: 1.15 }, { scale: 1, ease: "none" }).fromTo(
+        tl.fromTo(image.current, { scale: 1.15, "--blur-amount": "12px" }, { scale: 1, "--blur-amount": "0px", ease: "none" }).fromTo(
           text.current,
           { yPercent: 40, opacity: 0 },
           { yPercent: 0, opacity: 1, ease: "power2.out" },
           0.15,
         );
+
+        requestAnimationFrame(() => ScrollTrigger.refresh());
       }, section);
 
       cleanup = () => ctx.revert();
@@ -69,7 +90,7 @@ export function PinnedPhoto({
       cancelled = true;
       cleanup();
     };
-  }, []);
+  }, [enabled]);
 
   const src = `/images/diya-${String(index).padStart(2, "0")}.jpg`;
 
@@ -80,18 +101,19 @@ export function PinnedPhoto({
         ref={image}
         src={src}
         alt={title}
-        loading="lazy"
+        loading="eager"
         decoding="async"
-        className="absolute inset-0 h-full w-full object-cover object-[50%_30%] will-change-transform"
+        style={{ "--blur-amount": "12px" } as CSSProperties}
+        className="pinned-photo__img absolute inset-0 h-full w-full scale-[1.15] object-cover object-[50%_30%] will-change-transform"
       />
       <div className="absolute inset-0 bg-gradient-to-t from-ink/55 via-ink/10 to-transparent" />
       <div
         ref={text}
-        className="absolute inset-x-0 bottom-0 px-6 pb-16 text-center sm:pb-24"
+        className="absolute inset-x-0 bottom-0 translate-y-[40%] px-6 pb-16 text-center opacity-0 sm:pb-24"
       >
-        <h3 className="font-display text-4xl tracking-wide text-cream sm:text-6xl">{renderAppleEmojiText(title)}</h3>
+        <h3 className="font-display text-[clamp(2.65rem,8vw,2.25rem)] tracking-wide text-cream sm:text-6xl">{renderAppleEmojiText(title)}</h3>
         {subtitle && (
-          <p className="mx-auto mt-3 max-w-md text-sm font-light text-cream/85 sm:text-base">
+          <p className="mx-auto mt-3 max-w-md text-[clamp(1rem,3.5vw,0.875rem)] font-light text-cream/85 sm:text-base">
             {renderAppleEmojiText(subtitle)}
           </p>
         )}

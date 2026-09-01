@@ -301,3 +301,33 @@
     animation: none !important;
   }
 }
+
+/* Pinned photo — blur-to-focus scroll reveal */
+.pinned-photo__img {
+  filter: blur(var(--blur-amount, 12px));
+}
+
+/* Enhanced photo hover — chapters 1–4 only, pointer devices */
+.photo-hover-enhanced__img {
+  will-change: transform, filter;
+  transition:
+    transform 0.55s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@media (hover: hover) {
+  .photo-hover-enhanced {
+    transition: box-shadow 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .photo-hover-enhanced:hover {
+    box-shadow:
+      0 28px 70px -20px color-mix(in oklab, var(--ink) 35%, transparent),
+      0 12px 32px -12px color-mix(in oklab, var(--ink) 18%, transparent);
+  }
+
+  .photo-hover-enhanced:hover .photo-hover-enhanced__img {
+    transform: scale(1.06) rotate(0.6deg);
+    filter: brightness(1.05) contrast(1.02);
+  }
+}

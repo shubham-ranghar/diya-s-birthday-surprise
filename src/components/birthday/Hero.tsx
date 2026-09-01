@@ -150,7 +150,7 @@ export function Hero({
       <div className="relative z-10 w-full max-w-4xl text-center">
         <p
           ref={eyebrowRef}
-          className="font-label text-[0.8125rem] font-medium uppercase tracking-[0.25em] text-ink/65 opacity-0 sm:text-[0.9375rem] md:text-base"
+          className="font-label text-[clamp(0.95rem,2.8vw,0.8125rem)] font-medium uppercase tracking-[0.25em] text-ink/65 opacity-0 sm:text-[0.9375rem] md:text-base"
         >
           A surprise from Shubham <Emoji>💌</Emoji>
         </p>
@@ -192,7 +192,7 @@ export function Hero({
 
         <div
           ref={dateRef}
-          className="font-label mt-3 text-[0.875rem] font-medium uppercase tracking-[0.2em] text-ink/60 opacity-0 sm:text-[1rem] md:text-[1.0625rem]"
+          className="font-label mt-3 text-[clamp(1rem,3.2vw,0.875rem)] font-medium uppercase tracking-[0.2em] text-ink/60 opacity-0 sm:text-[1rem] md:text-[1.0625rem]"
         >
           10th September <Emoji>🎂</Emoji>
         </div>

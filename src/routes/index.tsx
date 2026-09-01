@@ -9,7 +9,7 @@ import { Particles } from "@/components/birthday/Particles";
 import { PinnedPhoto } from "@/components/birthday/PinnedPhoto";
 import { Preloader } from "@/components/birthday/Preloader";
 import { LineReveal, Reveal, WordReveal } from "@/components/birthday/Reveal";
-import { useSmoothScroll } from "@/components/birthday/useSmoothScroll";
+import { lenisInstance, useSmoothScroll } from "@/components/birthday/useSmoothScroll";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -39,6 +39,13 @@ function BirthdayPage() {
   useSmoothScroll(scrollReady);
 
   useEffect(() => {
+    window.scrollTo(0, 0);
+    if (lenisInstance) {
+      lenisInstance.scrollTo(0, { immediate: true });
+    }
+  }, []);
+
+  useEffect(() => {
     const t = setTimeout(() => setLoading(false), 2300);
     return () => clearTimeout(t);
   }, []);
@@ -57,6 +64,7 @@ function BirthdayPage() {
         images={[1, 2, 3]}
       />
       <PinnedPhoto
+        enabled={scrollReady}
         index={4}
         title="Moments, exactly as they were 📷"
         subtitle="No filter needed — this is simply you, being you. ✨"
@@ -69,7 +77,7 @@ function BirthdayPage() {
         images={[5, 6, 7, 8]}
         flip
       />
-      <PinnedPhoto index={9} title="Memories worth keeping 💫" subtitle="Saved, framed, and scrolled back to. 🖼️" />
+      <PinnedPhoto enabled={scrollReady} index={9} title="Memories worth keeping 💫" subtitle="Saved, framed, and scrolled back to. 🖼️" />
 
       <PhotoChapter
         eyebrow="Chapter Three"
@@ -100,15 +108,15 @@ function OpeningMessage() {
       <Particles emojiCount={5} />
       <div className="relative mx-auto max-w-3xl text-center">
       <Reveal>
-        <p className="text-[0.65rem] uppercase tracking-[0.38em] text-muted-foreground">
+        <p className="text-[clamp(0.76rem,2.5vw,0.65rem)] uppercase tracking-[0.38em] text-muted-foreground">
           Before you scroll <Emoji>✨</Emoji>
         </p>
       </Reveal>
-      <h2 className="mt-8 font-display text-3xl leading-snug tracking-tight sm:text-5xl">
+      <h2 className="mt-8 font-display text-[clamp(2.2rem,7vw,1.875rem)] leading-snug tracking-tight sm:text-5xl">
         <WordReveal text="Some people make life lighter just by being in it — and you have been one of them. 💫" />
       </h2>
       <LineReveal
-        className="mt-10 space-y-3 text-base font-light leading-relaxed text-muted-foreground sm:text-lg"
+        className="mt-10 space-y-3 text-[clamp(1.125rem,4vw,1rem)] font-light leading-relaxed text-muted-foreground sm:text-lg"
         lines={[
           "So instead of a message that disappears in a chat,",
           "I put together something you can scroll through slowly.",
@@ -141,13 +149,13 @@ function PhotoChapter({
       <div className="relative mx-auto max-w-6xl">
         <div className={`max-w-xl ${flip ? "sm:ml-auto sm:text-right" : ""}`}>
           <Reveal>
-            <p className="text-[0.65rem] uppercase tracking-[0.38em] text-sunset">{eyebrow}</p>
+            <p className="text-[clamp(0.76rem,2.5vw,0.65rem)] uppercase tracking-[0.38em] text-sunset">{eyebrow}</p>
           </Reveal>
-          <h2 className="mt-4 font-display text-4xl tracking-tight sm:text-6xl">
+          <h2 className="mt-4 font-display text-[clamp(2.65rem,8vw,2.25rem)] tracking-tight sm:text-6xl">
             <WordReveal text={title} />
           </h2>
           <Reveal delay={0.12}>
-            <p className="mt-4 text-base font-light leading-relaxed text-muted-foreground">
+            <p className="mt-4 text-[clamp(1.125rem,4vw,1rem)] font-light leading-relaxed text-muted-foreground">
               {renderAppleEmojiText(blurb)}
             </p>
           </Reveal>
@@ -165,6 +173,7 @@ function PhotoChapter({
               anim={animCycle[(n + i) % animCycle.length]!}
               delay={i * 0.12}
               drift={i % 2 === 0 ? 16 : 26}
+              enhancedHover
               className={i === 1 && images.length === 3 ? "sm:mt-12" : i % 2 === 1 ? "sm:mt-8" : ""}
             />
           ))}
@@ -181,15 +190,15 @@ function MessageFromShubham() {
       <Particles emojiCount={5} />
       <div className="relative mx-auto max-w-2xl rounded-[2.5rem] bg-card/80 p-8 shadow-soft backdrop-blur-sm sm:p-14">
         <Reveal>
-          <p className="text-[0.65rem] uppercase tracking-[0.38em] text-muted-foreground">
+          <p className="text-[clamp(0.76rem,2.5vw,0.65rem)] uppercase tracking-[0.38em] text-muted-foreground">
             A message for you <Emoji>💌</Emoji>
           </p>
         </Reveal>
-        <h2 className="mt-6 font-display text-3xl leading-snug tracking-tight sm:text-4xl">
+        <h2 className="mt-6 font-display text-[clamp(2.2rem,7vw,1.875rem)] leading-snug tracking-tight sm:text-4xl">
           <WordReveal text="Diya, 💖" stagger={0.08} />
         </h2>
         <LineReveal
-          className="mt-6 space-y-4 text-base font-light leading-relaxed text-foreground/85 sm:text-lg"
+          className="mt-6 space-y-4 text-[clamp(1.125rem,4vw,1rem)] font-light leading-relaxed text-foreground/85 sm:text-lg"
           lines={[
             "Another year of you — and honestly, the world is nicer for it.",
             "Thank you for the conversations that ran too long, for the patience you never made a big deal about, and for being someone I can be completely myself around.",
@@ -199,10 +208,10 @@ function MessageFromShubham() {
         />
         <Reveal delay={0.3} className="mt-10">
           <div className="flex items-end justify-between gap-4 border-t border-border pt-6">
-            <span className="text-[0.65rem] uppercase tracking-[0.32em] text-muted-foreground">
+            <span className="text-[clamp(0.76rem,2.5vw,0.65rem)] uppercase tracking-[0.32em] text-muted-foreground">
               With warmth
             </span>
-            <span className="font-script text-4xl text-sunset sm:text-5xl">Shubham</span>
+            <span className="font-script text-[clamp(2.65rem,8vw,2.25rem)] text-sunset sm:text-5xl">Shubham</span>
           </div>
         </Reveal>
       </div>
@@ -217,14 +226,14 @@ function DateReveal() {
       <Particles emojiCount={5} />
       <div className="relative text-center">
         <Reveal>
-          <p className="text-[0.65rem] uppercase tracking-[0.4em] text-muted-foreground">
+          <p className="text-[clamp(0.76rem,2.5vw,0.65rem)] uppercase tracking-[0.4em] text-muted-foreground">
             The day itself <Emoji>🎈</Emoji>
           </p>
         </Reveal>
 
         <div className="mt-8 flex items-baseline justify-center gap-3 sm:gap-6">
           <motion.span
-            className="font-display text-[6rem] leading-none tracking-tight text-sunset sm:text-[12rem]"
+            className="font-display text-[7rem] leading-none tracking-tight text-sunset sm:text-[12rem]"
             initial={{ opacity: 0, scale: 0.86 }}
             whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true, margin: "-15% 0px" }}
@@ -234,10 +243,10 @@ function DateReveal() {
           </motion.span>
           <div className="text-left">
             <Reveal delay={0.25}>
-              <p className="font-display text-3xl italic tracking-tight sm:text-5xl">th</p>
+              <p className="font-display text-[clamp(2.2rem,7vw,1.875rem)] italic tracking-tight sm:text-5xl">th</p>
             </Reveal>
             <Reveal delay={0.35}>
-              <p className="font-display text-3xl tracking-[0.12em] sm:text-5xl">September</p>
+              <p className="font-display text-[clamp(2.2rem,7vw,1.875rem)] tracking-[0.12em] sm:text-5xl">September</p>
             </Reveal>
           </div>
         </div>
@@ -250,7 +259,7 @@ function DateReveal() {
           transition={{ duration: 1.6, ease: "easeInOut" }}
         />
         <Reveal delay={0.4}>
-          <p className="mt-8 text-sm font-light tracking-wide text-muted-foreground">
+          <p className="mt-8 text-[clamp(1rem,3.5vw,0.875rem)] font-light tracking-wide text-muted-foreground">
             {renderAppleEmojiText("Circled, remembered, and celebrated. 🎂")}
           </p>
         </Reveal>
@@ -279,16 +288,16 @@ function GiftSection() {
       <Particles emojiCount={5} />
       <div className="relative mx-auto max-w-3xl text-center">
         <Reveal>
-          <p className="text-[0.65rem] uppercase tracking-[0.42em] text-gold">Your gift <Emoji>🎁</Emoji></p>
+          <p className="text-[clamp(0.76rem,2.5vw,0.65rem)] uppercase tracking-[0.42em] text-gold">Your gift <Emoji>🎁</Emoji></p>
         </Reveal>
-        <h2 className="mt-8 font-display text-[2.6rem] leading-[1.08] tracking-tight sm:text-7xl">
+        <h2 className="mt-8 font-display text-[clamp(3rem,10vw,2.6rem)] leading-[1.08] tracking-tight sm:text-7xl">
           <WordReveal text="I built this entire website" />
           <span className="mt-2 block italic text-gold">
             <WordReveal text="just for you. 💝" delay={0.3} />
           </span>
         </h2>
         <LineReveal
-          className="mx-auto mt-10 max-w-xl space-y-3 text-base font-light leading-relaxed text-cream/75 sm:text-lg"
+          className="mx-auto mt-10 max-w-xl space-y-3 text-[clamp(1.125rem,4vw,1rem)] font-light leading-relaxed text-cream/75 sm:text-lg"
           lines={[
             "Every section, every photo, every line — written and coded by hand.",
             "No template, no shortcut. Just a few late nights and one very specific person in mind.",
@@ -296,9 +305,9 @@ function GiftSection() {
           ]}
         />
         <Reveal delay={0.35} className="mt-14">
-          <p className="text-[0.6rem] uppercase tracking-[0.34em] text-cream/50">Made by</p>
+          <p className="text-[clamp(0.7rem,2.5vw,0.6rem)] uppercase tracking-[0.34em] text-cream/50">Made by</p>
           <motion.p
-            className="mt-2 font-script text-5xl text-gold sm:text-7xl"
+            className="mt-2 font-script text-[clamp(3.5rem,12vw,3rem)] text-gold sm:text-7xl"
             initial={{ opacity: 0, y: 18, letterSpacing: "0.14em" }}
             whileInView={{ opacity: 1, y: 0, letterSpacing: "0.01em" }}
             viewport={{ once: true }}
@@ -319,7 +328,7 @@ function Closing() {
       <Particles emojiCount={6} />
       <div className="relative mx-auto max-w-5xl">
         <div className="mx-auto max-w-xl text-center">
-          <h2 className="font-display text-3xl leading-snug tracking-tight sm:text-5xl">
+          <h2 className="font-display text-[clamp(2.2rem,7vw,1.875rem)] leading-snug tracking-tight sm:text-5xl">
             <WordReveal text="Here's to a year that treats you as well as you treat everyone else. 🥂" />
           </h2>
         </div>
@@ -339,12 +348,12 @@ function Closing() {
 
         <div className="mt-24 text-center sm:mt-32">
           <Reveal>
-            <p className="font-display text-4xl tracking-tight text-ink sm:text-6xl">
+            <p className="font-display text-[clamp(2.65rem,8vw,2.25rem)] tracking-tight text-ink sm:text-6xl">
               Happy Birthday, <span className="italic text-sunset">Diya</span> <Emoji>🎉</Emoji>
             </p>
           </Reveal>
           <Reveal delay={0.2}>
-            <p className="mt-6 text-sm font-light tracking-[0.18em] uppercase text-ink/55">
+            <p className="mt-6 text-[clamp(1rem,3.5vw,0.875rem)] font-light tracking-[0.18em] uppercase text-ink/55">
               10 · 09 — from Shubham <Emoji>💌</Emoji>
             </p>
           </Reveal>

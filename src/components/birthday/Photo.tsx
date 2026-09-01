@@ -38,6 +38,7 @@ export function Photo({
   className,
   caption,
   priority = false,
+  enhancedHover = false,
 }: {
   index: number;
   anim?: PhotoAnim;
@@ -46,12 +47,13 @@ export function Photo({
   caption?: string;
   drift?: number;
   priority?: boolean;
+  enhancedHover?: boolean;
 }) {
   const src = `/images/diya-${String(index).padStart(2, "0")}.jpg`;
 
   return (
     <motion.div
-      className={`group relative overflow-hidden rounded-3xl bg-secondary shadow-soft ${className ?? ""}`}
+      className={`group relative overflow-hidden rounded-3xl bg-secondary shadow-soft ${enhancedHover ? "photo-hover-enhanced" : ""} ${className ?? ""}`}
       style={{ aspectRatio: "9 / 16" }}
       initial="hidden"
       whileInView="visible"
@@ -64,7 +66,11 @@ export function Photo({
         alt={caption ?? `A photo of Diya, number ${index}`}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
-        className="h-full w-full object-cover object-center transition-transform duration-[900ms] ease-out group-hover:scale-[1.04]"
+        className={
+          enhancedHover
+            ? "photo-hover-enhanced__img h-full w-full object-cover object-center"
+            : "h-full w-full object-cover object-center transition-transform duration-[900ms] ease-out group-hover:scale-[1.04]"
+        }
       />
       <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-ink/25 via-transparent to-transparent" />
       {caption && (
