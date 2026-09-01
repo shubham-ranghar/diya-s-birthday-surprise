@@ -33,7 +33,11 @@ export function ChapterOneFannedGallery({
     const onWheel = (e: WheelEvent) => {
       const atStart = track.scrollLeft <= 1;
       const atEnd = track.scrollLeft >= track.scrollWidth - track.clientWidth - 1;
-      const delta = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+      
+      // Only intercept horizontal scroll events, let vertical scroll pass through
+      if (Math.abs(e.deltaX) < Math.abs(e.deltaY)) return;
+
+      const delta = e.deltaX;
 
       if (delta === 0) return;
 
@@ -194,9 +198,14 @@ export function ChapterOneFannedGallery({
           ))}
           <div className="fanned-gallery__spacer" aria-hidden="true" />
         </div>
-        <p className="fanned-gallery__hint mt-6 text-center text-[0.7rem] uppercase tracking-[0.28em] text-cream/40">
-          Swipe to browse
-        </p>
+        <div className="fanned-gallery__hint mt-6 flex items-center justify-center gap-2 text-center">
+          <p className="text-sm uppercase tracking-[0.28em] text-cream/40">
+            Swipe left to browse
+          </p>
+          <svg className="h-5 w-5 text-cream/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          </svg>
+        </div>
       </div>
     </section>
   );
