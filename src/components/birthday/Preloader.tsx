@@ -1,6 +1,7 @@
 import { AnimatePresence, motion } from "motion/react";
+import { Emoji, renderAppleEmojiText } from "./Emoji";
 
-const word = "Loading a Surprise...";
+const word = "loading a surprise for diya 🫶";
 
 export function Preloader({ show, onExitComplete }: { show: boolean; onExitComplete?: () => void }) {
   return (
@@ -13,8 +14,8 @@ export function Preloader({ show, onExitComplete }: { show: boolean; onExitCompl
           transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
         >
           <div className="text-center">
-            <p className="flex flex-wrap justify-center gap-[0.02em] font-display text-2xl tracking-wide text-ink sm:text-4xl">
-              {word.split("").map((c, i) => (
+            <p className="flex flex-wrap justify-center gap-[0.02em] font-display text-4xl tracking-wide text-ink sm:text-6xl">
+              {renderAppleEmojiText(word).map((c, i) => (
                 <motion.span
                   key={i}
                   initial={{ opacity: 0.15 }}
@@ -26,7 +27,7 @@ export function Preloader({ show, onExitComplete }: { show: boolean; onExitCompl
                     ease: "easeInOut",
                   }}
                 >
-                  {c === " " ? "\u00A0" : c}
+                  {c}
                 </motion.span>
               ))}
             </p>

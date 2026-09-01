@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import gsap from "gsap";
 
 import { Particles } from "@/components/birthday/Particles";
-import { Emoji } from "@/components/birthday/Emoji";
+import { Emoji, renderAppleEmojiText } from "@/components/birthday/Emoji";
 
 const SUNSET = "oklch(76.2% 0.132 45)";
 const SUNSET_LIGHT = "oklch(88% 0.06 55)";
@@ -152,7 +152,7 @@ export function Hero({
           ref={eyebrowRef}
           className="font-label text-[clamp(0.95rem,2.8vw,0.8125rem)] font-medium uppercase tracking-[0.25em] text-ink/65 opacity-0 sm:text-[0.9375rem] md:text-base"
         >
-          A surprise from Shubham <Emoji>💌</Emoji>
+          {renderAppleEmojiText("A surprise from Shubham 🫶")} <Emoji>💌</Emoji>
         </p>
 
         <h1 className="mt-4 font-display tracking-tight text-ink sm:mt-5">

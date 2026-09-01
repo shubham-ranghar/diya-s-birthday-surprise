@@ -70,9 +70,7 @@ function BirthdayPage() {
   useEffect(() => {
     if (scrollLocked) return;
 
-    window.scrollTo(0, 0);
     lenisInstance?.start();
-    lenisInstance?.scrollTo(0, { immediate: true });
   }, [scrollLocked]);
 
   useEffect(() => {
@@ -137,7 +135,7 @@ function BirthdayPage() {
 /* 2. Opening message ------------------------------------------------------- */
 function OpeningMessage() {
   return (
-    <section className="relative overflow-hidden px-6 py-28 sm:py-40">
+    <section className="relative overflow-hidden px-6 py-16 sm:py-24">
       <Particles emojiCount={5} />
       <div className="relative mx-auto max-w-3xl text-center">
       <Reveal>
@@ -145,11 +143,11 @@ function OpeningMessage() {
           Before you scroll <Emoji>✨</Emoji>
         </p>
       </Reveal>
-      <h2 className="mt-8 font-display text-[clamp(2.2rem,7vw,1.875rem)] leading-snug tracking-tight sm:text-5xl">
+      <h2 className="mt-6 font-display text-[clamp(2.2rem,7vw,1.875rem)] leading-snug tracking-tight sm:text-5xl">
         <WordReveal text="Some people make life lighter just by being in it — and you have been one of them. 💫" />
       </h2>
       <LineReveal
-        className="mt-10 space-y-3 text-[clamp(1.125rem,4vw,1rem)] font-light leading-relaxed text-muted-foreground sm:text-lg"
+        className="mt-8 space-y-3 text-[clamp(1.125rem,4vw,1rem)] font-light leading-relaxed text-muted-foreground sm:text-lg"
         lines={[
           "So instead of a message that disappears in a chat,",
           "I put together something you can scroll through slowly.",
@@ -244,7 +242,7 @@ function MessageFromShubham() {
             <span className="text-[clamp(0.76rem,2.5vw,0.65rem)] uppercase tracking-[0.32em] text-muted-foreground">
               With warmth
             </span>
-            <span className="font-script text-[clamp(2.65rem,8vw,2.25rem)] text-sunset sm:text-5xl">Shubham</span>
+            <span className="font-script text-[clamp(2.65rem,8vw,2.25rem)] text-sunset sm:text-5xl">{renderAppleEmojiText("Shubham 🫶")}</span>
           </div>
         </Reveal>
       </div>
@@ -346,7 +344,7 @@ function GiftSection() {
             viewport={{ once: true }}
             transition={{ duration: 1.8, ease: [0.22, 1, 0.36, 1] }}
           >
-            Shubham
+            {renderAppleEmojiText("Shubham 🫶")}
           </motion.p>
         </Reveal>
       </div>
@@ -387,7 +385,7 @@ function Closing() {
           </Reveal>
           <Reveal delay={0.2}>
             <p className="mt-6 text-[clamp(1rem,3.5vw,0.875rem)] font-light tracking-[0.18em] uppercase text-ink/55">
-              10 · 09 — from Shubham <Emoji>💌</Emoji>
+              10 · 09 — from {renderAppleEmojiText("Shubham 🫶")} <Emoji>💌</Emoji>
             </p>
           </Reveal>
         </div>
